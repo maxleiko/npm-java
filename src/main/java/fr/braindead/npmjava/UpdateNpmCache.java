@@ -18,19 +18,40 @@ import java.net.URLConnection;
  */
 public class UpdateNpmCache extends Thread {
 
-    private DoneCallback cb;
-    
-    public UpdateNpmCache() {
-        this.cb = new DoneCallback() {
-            @Override
-            public void done(JsonObject npmdb) {}
-            @Override
-            public void error(Exception e) {}
-        };
-    }
+    private DoneCallback cb = new DoneCallback() {
+        @Override
+        public void done(JsonObject npmdb) {}
+        @Override
+        public void error(Exception e) {}
+    };
+    private JsonObject jsonCache = null;
 
+    /**
+     * Update npm cache file in background and get a call to DoneCallback instance
+     * when process is done
+     * @param cb callback
+     */
     public UpdateNpmCache(DoneCallback cb) {
         this.cb = cb;
+    }
+
+    /**
+     * Update npm cache from a given JsonObject in background and get a call to DoneCall instance
+     * when process is done
+     * @param jsonCache content used to overwrite cache file
+     * @param cb callback
+     */
+    public UpdateNpmCache(JsonObject jsonCache, DoneCallback cb) {
+        this.jsonCache = jsonCache;
+        this.cb = cb;
+    }
+
+    /**
+     * Updates npm cache from a given JsonObject in background 
+     * @param jsonCache
+     */
+    public UpdateNpmCache(JsonObject jsonCache) {
+        this.jsonCache = jsonCache;
     }
 
     @Override
@@ -56,11 +77,18 @@ public class UpdateNpmCache extends Thread {
         FileOutputStream fos = null;
         long start = System.currentTimeMillis();
 
+        // TODO if JVM is stop while writing file... file will be corrupted and I do not handle corrupted file yet        
         try {
-            URL url = new URL("http://registry.npmjs.org/-/all");
-
-            URLConnection conn = url.openConnection();
-            is = conn.getInputStream();
+            if (this.jsonCache != null) {
+                // update cache file from given JsonObject
+                is = new ByteArrayInputStream(this.jsonCache.toString().getBytes());
+                
+            } else {
+                // update cache from remote registry
+                URL url = new URL("http://registry.npmjs.org/-/all");
+                URLConnection conn = url.openConnection();
+                is = conn.getInputStream();
+            }
             fos = new FileOutputStream(cache);
 
             byte[] buffer = new byte[4096];

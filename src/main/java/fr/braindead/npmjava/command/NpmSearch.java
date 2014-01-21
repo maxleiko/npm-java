@@ -1,9 +1,7 @@
 package fr.braindead.npmjava.command;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
 import fr.braindead.npmjava.UpdateNpmCache;
 import fr.braindead.npmjava.util.Conf;
 
@@ -46,15 +44,12 @@ public class NpmSearch {
                     InputStream is = conn.getInputStream();
                     JsonObject data = (JsonObject) jsonParser.parse(new InputStreamReader(is));
                     for (Map.Entry<String, JsonElement> entry : data.entrySet()) {
-                        if (entry.getKey().matches(pattern)) {
-                            cacheData.add(entry.getKey(), entry.getValue());
-                        }
+                        cacheData.add(entry.getKey(), entry.getValue());
                     }
                     cb.onSuccess(getSearchResults(cacheData, pattern));
                     
                     // update cache in background
-                    // TODO update from cache file not from internet (prevent from redownloading the whole thing)
-                    UpdateNpmCache thread = new UpdateNpmCache();
+                    UpdateNpmCache thread = new UpdateNpmCache(cacheData);
                     thread.start();
                 }
 
@@ -94,5 +89,22 @@ public class NpmSearch {
     public interface SearchCallback {
         void onSuccess(JsonArray jsonRes);
         void onError(Exception e);
+    }
+
+    public static void main(String[] args) {
+        NpmSearch search = new NpmSearch();
+        search.execute("(^kevoree-chan-|^kevoree-node-|^kevoree-group-|^kevoree-comp-).*", new SearchCallback() {
+            @Override
+            public void onSuccess(JsonArray jsonRes) {
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                System.out.println(gson.toJson(jsonRes));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                System.err.println("ERROR");
+                e.printStackTrace();
+            }
+        });
     }
 }
