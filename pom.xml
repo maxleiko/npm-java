@@ -37,8 +37,8 @@
 
     <developers>
         <developer>
+            <id>leiko</id>
             <name>Maxime Tricoire</name>
-            <id>maxleiko</id>
             <email>max.tricoire@gmail.com</email>
             <roles>
                 <role>admin</role>
@@ -83,11 +83,12 @@
 
     <distributionManagement>
         <repository>
-            <id>kevoree.oss.release</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Staging Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
         <snapshotRepository>
-            <id>kevoree.oss.snapshots</id>
+            <id>sonatype-nexus-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
