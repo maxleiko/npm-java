@@ -3,15 +3,15 @@
 
     <groupId>fr.braindead</groupId>
     <artifactId>npm-java</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>npm-java</name>
     <url>http://maven.apache.org</url>
 
     <organization>
-        <name>Kevoree Project</name>
-        <url>http://kevoree.org</url>
+        <name>Braindead</name>
+        <url>http://braindead.fr</url>
     </organization>
 
     <licenses>
@@ -56,13 +56,8 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.9</version>
+            <version>4.11</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.kevoree.log</groupId>
-            <artifactId>org.kevoree.log</artifactId>
-            <version>1</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
